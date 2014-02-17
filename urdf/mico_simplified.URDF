@@ -9,7 +9,7 @@
 </gazebo>
 
 <!--
- Trying to get thing to not flail START-->
+ Trying to get thing to not flail START
   <dynamics damping="0.0" friction="0.0"/>
 
   <physics type="ode">
@@ -19,15 +19,45 @@
     <constraints cfm="0.0" erp="0.1" contact_max_correcting_vel="10.0" contact_surface_layer="0.001"/>
   </ode>
 </physics>
+-->
 
 <!--Trying to get thing to not flail END -->
 
-  <link name="world"/>
 
-  <joint name="fixed" type="fixed">
+  <link name="world"/>
+   <joint name="fixed" type="fixed">
     <parent link="world"/>
     <child link="support_box"/>
   </joint>
+
+<!--
+  <gazebo>
+  <plugin name="gazebo_ros_openni_kinect_controller" filename="libgazebo_ros_openni_kinect.so">
+    <baseline>0.2</baseline>
+    <alwaysOn>true</alwaysOn>
+    <updateRate>1.0</updateRate>
+    <cameraName>kinect_ir</cameraName>
+    <imageTopicName>/kinect/depth/image_raw</imageTopicName>
+    <cameraInfoTopicName>/kinect/depth/camera_info</cameraInfoTopicName>
+    <depthImageTopicName>/kinect/depth/image_raw</depthImageTopicName>
+    <depthImageInfoTopicName>/kinect/depth/camera_info</depthImageInfoTopicName>
+    <pointCloudTopicName>/kinect/depth/points</pointCloudTopicName>
+    <frameName>${frame_name}</frameName>
+    <pointCloudCutoff>0.5</pointCloudCutoff>
+    <distortionK1>0.00000001</distortionK1>
+    <distortionK2>0.00000001</distortionK2>
+    <distortionK3>0.00000001</distortionK3>
+    <distortionT1>0.00000001</distortionT1>
+    <distortionT2>0.00000001</distortionT2>
+    <CxPrime>0</CxPrime>
+    <Cx>0</Cx>
+    <Cy>0</Cy>
+    <focalLength>0</focalLength>
+    <hackBaseline>0</hackBaseline>
+  </plugin>
+</gazebo>
+-->
+
 
   <link name="support_box">
     <visual>
@@ -149,8 +179,11 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="1000"
+      velocity="1" />
+       <dynamics damping="1"/>
+        <safety_controller k_position="100" k_velocity="10"
+                         soft_lower_limit="-3.14" soft_upper_limit="3.14" />
   </joint>
   <link
     name="Arm_Link">
@@ -207,8 +240,11 @@
     <limit
       lower="-2.26"
       upper="2.26"
-      effort="0"
-      velocity="0" />
+      effort="1000"
+      velocity="1" />    
+       <dynamics damping="1"/>
+      <safety_controller k_position="100" k_velocity="10"
+                         soft_lower_limit="-2.26" soft_upper_limit="2.26" />
   </joint>
   <link
     name="Forearm_Link">
@@ -265,8 +301,11 @@
     <limit
       lower="-2.44"
       upper="2.44"
-      effort="0"
-      velocity="0" />
+      effort="1000"
+      velocity="1" />
+       <dynamics damping="1"/>
+        <safety_controller k_position="100" k_velocity="10"
+                        soft_lower_limit="-2.44" soft_upper_limit="2.44" />
   </joint>
   <link
     name="Wrist_1_Link">
@@ -323,8 +362,9 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="1000"
+      velocity="10" />
+       <dynamics damping="1"/>
   </joint>
   <link
     name="Wrist_2_Link">
@@ -381,8 +421,11 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="1000"
+      velocity="10" />
+       <dynamics damping="1"/>
+       <safety_controller k_position="100" k_velocity="10"
+         soft_lower_limit="-3.1" soft_upper_limit="3.1" />
   </joint>
   <link
     name="Hand_Link">
@@ -439,25 +482,29 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="1000"
+      velocity="1" />
+    <dynamics damping="0.01" />
+          <safety_controller k_position="100" k_velocity="10"
+                         soft_lower_limit="-3.1" soft_upper_limit="3.1" />
   </joint>
   <link
     name="Finger_1_Proximal_Link">
+    
     <inertial>
       <origin
         xyz="0.0172616572113394 0.0105538611465319 -0.0112506191776746"
         rpy="0 0 0" />
-      <mass
-        value="0.0106365214895162" />
+          <mass
+        value="0.4" />
       <inertia
-        ixx="2.41074761126296E-06"
-        ixy="6.22421954028106E-07"
-        ixz="-2.46521467551818E-11"
-        iyy="1.51566092378154E-06"
-        iyz="4.24681773393991E-11"
-        izz="2.54988112393165E-06" />
-    </inertial>
+        ixx="0.00025595"
+        ixy="-1.199E-08"
+        ixz="4.5804E-06"
+        iyy="0.00020193"
+        iyz="5.0676E-08"
+        izz="0.00013393" />
+  </inertial>
     <visual>
       <origin
         xyz="0 0 0"
@@ -495,10 +542,13 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="0"
+      lower="-0.001"
       upper="0.78"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="1" />
+    <dynamics damping="0.01" />
+          <safety_controller k_position="100" k_velocity="10"
+                         soft_lower_limit="-0.1" soft_upper_limit=".75" />
   </joint>
   <link
     name="Finger_1_Distal_Link">
@@ -506,15 +556,15 @@
       <origin
         xyz="0.0126210373400246 0.00643480436760779 -0.0112500681940836"
         rpy="0 0 0" />
-      <mass
-        value="0.0121939442358921" />
+          <mass
+        value="0.4" />
       <inertia
-        ixx="1.65156773375087E-06"
-        ixy="9.54167272729886E-07"
-        ixz="-1.00860347569415E-11"
-        iyy="1.49606028082548E-06"
-        iyz="-1.22490314303896E-11"
-        izz="2.37956623675183E-06" />
+        ixx="0.00025595"
+        ixy="-1.199E-08"
+        ixz="4.5804E-06"
+        iyy="0.00020193"
+        iyz="5.0676E-08"
+        izz="0.00013393" />      
     </inertial>
     <visual>
       <origin
@@ -553,10 +603,13 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="0"
+      lower="-0.001"
       upper="0.78"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="1" />
+    <dynamics damping="0.01" />
+      <safety_controller k_position="100" k_velocity="10"
+                         soft_lower_limit="-0.1" soft_upper_limit=".75" />
   </joint>
   <link
     name="Finger_2_Proximal_Link">
@@ -564,15 +617,15 @@
       <origin
         xyz="-0.0172616584345737 -0.0105538552511416 0.0112493808527515"
         rpy="0 0 0" />
-      <mass
-        value="0.0106365251828778" />
+          <mass
+        value="0.4" />
       <inertia
-        ixx="2.41074854318984E-06"
-        ixy="6.22421733493864E-07"
-        ixz="2.47092382285307E-11"
-        iyy="1.51566070025321E-06"
-        iyz="-4.24941314480507E-11"
-        izz="2.54988230315087E-06" />
+        ixx="0.00025595"
+        ixy="-1.199E-08"
+        ixz="4.5804E-06"
+        iyy="0.00020193"
+        iyz="5.0676E-08"
+        izz="0.00013393" />   
     </inertial>
     <visual>
       <origin
@@ -611,10 +664,13 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="0"
+      lower="-0.001"
       upper="0.78"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="1" />
+    <dynamics damping="0.01" />
+      <safety_controller k_position="5000" k_velocity="20"
+                         soft_lower_limit="-0.1" soft_upper_limit=".75" />
   </joint>
   <link
     name="Finger_2_Distal_Link">
@@ -622,15 +678,15 @@
       <origin
         xyz="-0.0126210373425155 -0.00643480437565225 0.0112499318045061"
         rpy="0 0 0" />
-      <mass
-        value="0.012193944229752" />
+          <mass
+        value="0.4" />
       <inertia
-        ixx="1.65156773202737E-06"
-        ixy="9.54167272215506E-07"
-        ixz="1.00859417239942E-11"
-        iyy="1.49606028060199E-06"
-        iyz="1.22487380227665E-11"
-        izz="2.37956623494218E-06" />
+        ixx="0.00025595"
+        ixy="-1.199E-08"
+        ixz="4.5804E-06"
+        iyy="0.00020193"
+        iyz="5.0676E-08"
+        izz="0.00013393" />
     </inertial>
     <visual>
       <origin
@@ -669,10 +725,13 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="0"
+      lower="-0.01"
       upper="0.78"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity=".2" />
+    <dynamics damping="0.001" />
+      <safety_controller k_position="5000" k_velocity="20"
+                         soft_lower_limit="-0.1" soft_upper_limit=".75" />
   </joint>
 
   <transmission name="tran1">
